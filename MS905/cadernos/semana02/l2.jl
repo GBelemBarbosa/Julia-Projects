@@ -115,12 +115,10 @@ Uma solução melhor, no caso de imagens, é usar como valor faltante o valor qu
 
 # ╔═╡ 802bec56-ee09-11ea-043e-51cf1db02a34
 function extend(v::AbstractVector, i)
-	len=length(v)
-	
 	if i<1
 		return v[1]
-	elseif i>len
-		return v[len]
+	elseif i>length(v)
+		return v[end]
 	end
     return v[i]
 end
@@ -292,8 +290,8 @@ function extend(M::AbstractMatrix, i, j)
 	elseif j>jMax
 		j=jMax
 	end
-	
-    return M[i, j]
+
+	return M[i, j]
 end
 
 # ╔═╡ 803905b2-ee09-11ea-2d52-e77ff79693b0
@@ -366,15 +364,20 @@ end
 
 # ╔═╡ 28e20950-ee0c-11ea-0e0a-b5f2e570b56e
 function convolve(v::AbstractVector, k)
-	aux = copy(v)
-	len = length(v)
-	l = length(k)
-	l₂ = (l+1)÷2
+	l₂ = length(k)÷2
+	k = OffsetArray(k, -l₂:l₂)
+	if v[1] isa Number
+		prov₀ = 0
+		aux = convert.(Float64, v)
+	else
+		prov₀ = RGB(0, 0, 0)
+		aux = copy(v)
+	end
 	
-	for i in 1:len
-		prov = 0
-		for j in 1:l
-			prov+=k[j]*extend(v, i+j-l₂)
+	for i in 1:length(v)
+		prov = prov₀
+		for j in -l₂:l₂
+			prov+=k[j]*extend(v, i+j)
 		end
 		aux[i] = prov
 	end
@@ -435,18 +438,22 @@ md"""
 
 # ╔═╡ 8b96e0bc-ee15-11ea-11cd-cfecea7075a0
 function convolve(M::AbstractMatrix, K::AbstractMatrix)
-	aux = copy(M)
-	MiMax, MjMax=size(M)
-	KiMax, KjMax=size(K)
-	KiMax₂ = (KiMax+1)÷2
-	KjMax₂ = (KjMax+1)÷2
+	KiMax₂, KjMax₂ = size(K).÷2
+	K = OffsetArray(K, -KiMax₂:KiMax₂, -KjMax₂:KjMax₂)
+	if M[1,1] isa Number
+		prov₀ = 0
+		aux = convert.(Float64, M)
+	else
+		prov₀ = RGB(0, 0, 0)
+		aux = copy(M)
+	end
 	
-	for i in 1:MiMax
-		for j in 1:MjMax
-			prov = 0
-			for k in 1:KiMax
-				for l in 1:KjMax
-					prov+=K[k, l]*extend(M, i+k-KiMax₂, j+l-KjMax₂)
+	for i in 1:size(M, 1)
+		for j in 1:size(M, 2)
+			prov = prov₀
+			for k in -KiMax₂:KiMax₂
+				for l in -KiMax₂:KjMax₂
+					prov+=K[k, l]*extend(M, i+k, j+l)
 				end
 			end
 			aux[i, j] = prov
@@ -454,20 +461,6 @@ function convolve(M::AbstractMatrix, K::AbstractMatrix)
 	end
 	
     return aux
-end
-
-# ╔═╡ 5f6d771a-7ff1-4658-8ec2-1bb6d78d6ad2
-function convolve(M::Matrix{RGB{N0f8}}, K::AbstractMatrix)
-	MiMax, MjMax=size(M)
-	R=[M[i,j].r for i=1:MiMax, j=1:MjMax]
-	G=[M[i,j].g for i=1:MiMax, j=1:MjMax]
-	B=[M[i,j].b for i=1:MiMax, j=1:MjMax]
-
-	R=convolve(R, K)
-	G=convolve(G, K)
-	B=convolve(B, K)
-
-	return RGB.(R, G, B)
 end
 
 # ╔═╡ 93284f92-ee12-11ea-0342-833b1a30625c
@@ -495,9 +488,9 @@ test_image_with_border =
 
 # ╔═╡ 275a99c8-ee1e-11ea-0a76-93e3618c9588
 K_test = [
-    0 0 0
-    0 1/9 0
-    0 0 0
+    1/3 0 0
+    0 1/3 0
+    0 0 1/3
 ]
 
 # ╔═╡ 42dfa206-ee1e-11ea-1fcd-21671042064c
@@ -640,6 +633,7 @@ function with_sobel_edge_detect(image)
 	G_y=transpose(Gₓ)
 	Gₜ=.√(Gₓ.^2+G_y.^2)
 	soma=sum(i for i=Gₜ)
+	println(Gₜ)
 	
     return convolve(image, Gₜ./soma)
 end
@@ -1154,9 +1148,9 @@ version = "0.2.16"
 
 [[deps.ImageFiltering]]
 deps = ["CatIndices", "ComputationalResources", "DataStructures", "FFTViews", "FFTW", "ImageBase", "ImageCore", "LinearAlgebra", "OffsetArrays", "Reexport", "SparseArrays", "StaticArrays", "Statistics", "TiledIteration"]
-git-tree-sha1 = "15bd05c1c0d5dbb32a9a3d7e0ad2d50dd6167189"
+git-tree-sha1 = "8b251ec0582187eff1ee5c0220501ef30a59d2f7"
 uuid = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
-version = "0.7.1"
+version = "0.7.2"
 
 [[deps.ImageIO]]
 deps = ["FileIO", "IndirectArrays", "JpegTurbo", "LazyModules", "Netpbm", "OpenEXR", "PNGFiles", "QOI", "Sixel", "TiffImages", "UUIDs"]
@@ -1496,9 +1490,9 @@ version = "0.12.3"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "0044b23da09b5608b4ecacb4e5e6c6332f833a7e"
+git-tree-sha1 = "3d5bf43e3e8b412656404ed9466f1dcbf7c50269"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.3.2"
+version = "2.4.0"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -1513,9 +1507,9 @@ version = "0.3.2"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
-git-tree-sha1 = "8d1f54886b9037091edf146b517989fc4a09efec"
+git-tree-sha1 = "a602d7b0babfca89005da04d89223b867b55319f"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.39"
+version = "0.7.40"
 
 [[deps.Preferences]]
 deps = ["TOML"]
@@ -1702,9 +1696,9 @@ version = "0.3.1"
 
 [[deps.TranscodingStreams]]
 deps = ["Random", "Test"]
-git-tree-sha1 = "ed5d390c7addb70e90fd1eb783dcb9897922cbfa"
+git-tree-sha1 = "8a75929dcd3c38611db2f8d08546decb514fcadf"
 uuid = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
-version = "0.9.8"
+version = "0.9.9"
 
 [[deps.Tricks]]
 git-tree-sha1 = "6bac775f2d42a611cdfcd1fb217ee719630c4175"
@@ -1827,7 +1821,7 @@ version = "17.4.0+0"
 # ╠═beb62fda-38a6-4528-a176-cfb726f4b5bd
 # ╟─f0d55cec-2e81-4cbb-b166-2cf4f2a0f43f
 # ╠═1c8b4658-ee0c-11ea-2ede-9b9ed7d3125e
-# ╟─f0c3e99d-9eb9-459e-917a-c2338af6683c
+# ╠═f0c3e99d-9eb9-459e-917a-c2338af6683c
 # ╠═a6149507-d5ba-45c1-896a-3487070d36ec
 # ╟─f8bd22b8-ee14-11ea-04aa-ab16fd01826e
 # ╠═2a9dd06a-ee13-11ea-3f84-67bb309c77a8
@@ -1857,7 +1851,6 @@ version = "17.4.0+0"
 # ╠═3cd535e4-ee26-11ea-2482-fb4ad43dda19
 # ╟─7c41f0ca-ee15-11ea-05fb-d97a836659af
 # ╠═8b96e0bc-ee15-11ea-11cd-cfecea7075a0
-# ╠═5f6d771a-7ff1-4658-8ec2-1bb6d78d6ad2
 # ╟─0cabed84-ee1e-11ea-11c1-7d8a4b4ad1af
 # ╟─5a5135c6-ee1e-11ea-05dc-eb0c683c2ce5
 # ╠═577c6daa-ee1e-11ea-1275-b7abc7a27d73
