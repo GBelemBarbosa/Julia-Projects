@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.16.0
+# v0.19.11
 
 using Markdown
 using InteractiveUtils
@@ -7,8 +7,9 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
@@ -24,17 +25,14 @@ end
 
 # ╔═╡ 85cfbd10-f384-11ea-31dc-b5693630a4c5
 md"""
-
 # **Lista 3**: _Estrutura e linguagem_
-`MS905`, 2º sem 2021
+`MS905`, 2º sem. 2022
 
-`Data de entrega`: 09 de setembro às 23:59.
+`Data de entrega`: **15/09, 2022**
 
-Este caderno contém verificações _simples_ para ajudar você a saber se o que fez faz sentido. Essas verificações são incompletas e não corrigem completamente os exercícios. Mas, se elas disserem que algo não está bom, você sabe que tem que tentar de novo.
+Este caderno contém _verificações ativas das respostas_! Em alguns exercícios você verá uma caixa colorida que roda alguns casos simples de teste e provê retorno imediato para a sua solução. Edite sua solução, execute a célula e verifique se passou na verificação. Note que a verificação feita é apenas superficial. Para a correção serão verificados mais casos e você tem a obrigação de escrever código que funcione adequadamente.
 
-_Para os alunos regulares:_ as listas serão corrigidas com exemplos mais sofisticados e gerais do que aqueles das verificações incluídas. 
-
-Sintam-se livres de fazer perguntas no fórum.
+Pergunte o quanto quiser (use o Discord)!
 """
 
 # ╔═╡ 33e43c7c-f381-11ea-3abc-c942327456b1
@@ -56,7 +54,7 @@ Submetido por: **_$(student.name)_** ($(student.email_dac)@unicamp.br)
 # ╔═╡ 938185ec-f384-11ea-21dc-b56b7469f798
 md"""
 #### Iniciando pacote
-_Quando executado a primeira vez pode demorar por instalar paoctes._
+_Quando executado a primeira vez pode demorar por instalar pacotes._
 """
 
 # ╔═╡ c75856a8-1f36-4659-afb2-7edb14894ea1
@@ -66,9 +64,9 @@ md"""
 
 # ╔═╡ c9a8b35d-2183-4da1-ae35-d2552020e8a8
 md"""
-Até agora no curso nós lidamos sobretudo com dados em formatos de imagens. Mas sabemos que existem muitas outras formas de dados e esse notebook vai introduzir outra forma, o **texto**. Nesse sentido essa lista vai também avaliar a sua capacidade de aprender a medida que resolve os exercícios usando o que já aprendeu e o que irá aprender com a leitura.
+Até agora no curso nós lidamos principalmente com dados em formatos de imagens. Mas existem muitas outras formas de dados e esse notebook vai introduzir outro formato, o **texto**. Nesse sentido, essa lista vai também avaliar a sua capacidade de aprender à medida que resolve os exercícios usando o que já aprendeu e o que irá aprender com a leitura.
 
-Haverá um certo enfoque em texto escrito em _liguagem natural_ (para constratar com a linguagem típicas de computadores.
+Haverá um certo enfoque em texto escrito em _linguagem natural_ (para contrastar com a linguagens típicas de computadores).
 
 Vamos tentar analisar e gerar texto em linguagem natural, por vezes em português e em inglês. De fato o processamento e geração de linguagem natural é uma área muito ativa de Inteligência Artificial, como é o caso de modelos de redes neurais profundas como o [GPT-3](https://en.wikipedia.org/wiki/GPT-3).
 """
@@ -77,9 +75,9 @@ Vamos tentar analisar e gerar texto em linguagem natural, por vezes em portuguê
 md"""
 ## **Exercício 1:** _Detecção de idioma_
 
-Nesse primeiro exercício vamos criar uma _inteligência artificial_ bastante simples. A linguagem natural pode serbem complicada, mas há uma estrutura sujacente que podemos explorar. 
+Nesse primeiro exercício vamos criar uma _inteligência artificial_ bastante simples. A linguagem natural é bastante complexa, mas há uma estrutura subjacente que podemos explorar. 
 
-Como começar com uma estrutura muito simples de textos em português ou inglês (e outras línguas ocidentais): o conjunto de caracteres usando na escrita. Se gerarmos texto aleatório gerando carcteres `Char` quaisquer, quase com certeza não iteremos obter algo reconhecíuvel:
+Vamos começar com uma estrutura muito simples de textos em português ou inglês (e outras línguas ocidentais): o conjunto de caracteres usando na escrita. Se gerarmos texto aleatório gerando caracteres `Char` quaisquer, quase com certeza não iremos obter algo reconhecível:
 """
 
 # ╔═╡ 3206c771-495a-43a9-b707-eaeb828a8545
@@ -91,12 +89,12 @@ String(rand(Char, 40))   # Une 40 caracteres aleatórios em uma
 
 # ╔═╡ 59f2c600-2b64-4562-9426-2cfed9a864e4
 md"""
-(`Char` em Julia é o typo para um caracter [Unicode](https://en.wikipedia.org/wiki/Unicode). Unicode contém muitos conjuntos diferentes de catacteres, que cobrem a maoria das línguas do planeta (como caracteres latinos, gregos, cirílico, chinês) e de fora do planeta (tem kligon, pelo menos) e até emojis. Daí, os caracteres latinos são minoria e por isso aparecem raramente em amostras aleatórias.)
+(`Char` em Julia é o tipo para um caracter [Unicode](https://en.wikipedia.org/wiki/Unicode). Unicode contém muitos conjuntos diferentes de caracteres, que cobrem a maioria das línguas do planeta (como caracteres latinos, gregos, cirílico, chinês) e de fora do planeta (tem Klingon, pelo menos) e até emojis. Daí, os caracteres latinos são minoria e por isso aparecem raramente em amostras aleatórias.)
 """
 
 # ╔═╡ f457ad44-f990-11ea-0e2d-2bb7627716a8
 md"""
-No lutar disso, vamos definir um vetor de caracteres, que vamos chamar de `alphabet` que irá conter apenas as letras usuais. Para deixar as coisas bem simples, vamos considerar apenas caracteres minúsculos e o espaço em branco, sem acentos, sem pontuação. Vamos então usar apenas 27 caracteres. Observer que usamos uma notação de concatenação de vetores abaixo.
+Para contornar isso, vamos definir um vetor de caracteres, que vamos chamar de `alphabet`. Ele irá conter apenas as letras usuais. Para deixar as coisas bem simples, vamos considerar apenas caracteres minúsculos e o espaço em branco, sem acentos, sem pontuação. Vamos então usar apenas 27 caracteres. Observer que usamos notação de concatenação de vetores abaixo.
 """
 
 # ╔═╡ 4efc051e-f92e-11ea-080e-bde6b8f9295a
@@ -116,13 +114,13 @@ Já parece melhor, mas ainda está bem longe de um texto natural em português o
 
 ## Tabelas de frequência
 
-Paralavras em uma língua não são obtidas escolhendo-se os caracteres de forma aleatória. Em porticular, podemos partir da observação que *algumas letras são mais comuns que outras*. Podemos operacionalizar isso obtendo uma tabela de frequencia dos caracteres a partir de uma amostra de texto que seja representativa da linguagem.
+Palavras em uma língua não são obtidas escolhendo-se os caracteres de forma aleatória. Em particular, podemos partir da observação que *algumas letras são mais comuns que outras*. Podemos operacionalizar isso obtendo uma tabela de frequência dos caracteres a partir de uma amostra de texto que seja representativa da linguagem.
 
 As amostras a seguir foram obtidas da Wikipedia. Sinta-se à vontade de testar com sua própria amostra. 
 
-Lembrese que o símbolo $(html"<img src='https://cdn.jsdelivr.net/gh/ionic-team/ionicons@5.0.0/src/svg/eye-outline.svg' style='width: 1em; height: 1em; margin-bottom: -.2em;'>") do lado direito de cada célula é usado para esconder o mostrar o código que gerou o resultado. Note o uso da função `unaccent` que tira os acentos da mostra em português. Você poderá ver a implementação dela mais abaixo.
+Lembre-se que o símbolo $(html"<img src='https://cdn.jsdelivr.net/gh/ionic-team/ionicons@5.0.0/src/svg/eye-outline.svg' style='width: 1em; height: 1em; margin-bottom: -.2em;'>") do lado direito de cada célula é usado para esconder ou mostrar o código que gerou o resultado. Note o uso da função `unaccent` que tira os acentos da amostra em português. Você poderá ver a implementação dela mais abaixo.
 
-Nós também incluímos uma amostra de inglẽs, que será usada depois.
+Nós também incluímos uma amostra de inglês, que será usada depois.
 """
 
 # ╔═╡ d67034d0-f92d-11ea-31c2-f7a38ebb412f
@@ -145,7 +143,7 @@ samples = (
 md"""
 #### Exercise 1.1 - _Limpeza de dados_
 
-Olhando a amostra, podemos ver que mesmo após de limparmos o acentos ela ainda tem muitos outros caracteres que não estão considerados em `alphabet` (letras sem acentos em minúsculas e espaço em branco): sinais de pontuação, colchetes, alguns números, etc. 
+Olhando a amostra, podemos ver que mesmo após a retirada dos acentos ela ainda possui muitos outros caracteres que não estão considerados em `alphabet` (letras sem acentos em minúsculas e espaço em branco): sinais de pontuação, colchetes, alguns números, etc. 
 
 Vamos limpar os dados usando a função `filter` do Julia.
 """
@@ -157,12 +155,12 @@ filter(isodd, [6, 7, 8, 9, -5])
 md"""
 `filter` recebe dois argumentos. uma **função** e uma **coleção**. A função é então aplicada em cada elemento da coleção. Ela deve retornar `true` ou `false` para cada elemento. (Esse tipo de função pode ser chamada de um **predicado**). Ao final ela devolve uma coleção com os elementos para o qual o resultado da função foi `true`.
 
-Uma coisa interessante de observar é que em Julia funções são _objetos_ como outros quaisquer. Eles podem ser atribuídos à variáveis ou passados a outras funções sem precisar de nenhuma sintaxe especial.
+Uma coisa interessante é lembrar que em Julia funções são _objetos_ como outros quaisquer. Eles podem ser atribuídos à variáveis ou passados a outras funções sem necessitar de nenhuma sintaxe especial.
 
 
 $(html"<br>")
 
-Nós já escrevemos uma função `isinalphabet`, que recebe um caracter e decide se ele está no nosso alfabeto ou não:
+Abaixo apresentamos a função `isinalphabet`, que recebe um caracter e decide se ele está no nosso alfabeto ou não:
 """
 
 # ╔═╡ 5c74a052-f92e-11ea-2c5b-0f1a3a14e313
@@ -174,36 +172,35 @@ end
 isinalphabet('a'), isinalphabet('+')
 
 # ╔═╡ 129fbcfe-f998-11ea-1c96-0fd3ccd2dcf8
-md"👉 Use `filter` para extrair de um testo apenas os caracteres que estão no `alphabet` da frase `messy_sentence_1`:"
+md"👉 Use `filter` para extrair apenas os caracteres que estão no `alphabet` da frase `messy_sentence_1`:"
 
 # ╔═╡ 3a5ee698-f998-11ea-0452-19b70ed11a1d
 messy_sentence_1 = "#wow 2020 ¥500 (blingbling!)"
 
 # ╔═╡ 75694166-f998-11ea-0428-c96e1113e2a0
-cleaned_sentence_1 = missing
+cleaned_sentence_1 = filter(isinalphabet, messy_sentence_1)
 
 # ╔═╡ 05f0182c-f999-11ea-0a52-3d46c65a049e
 md"""
-Nós também não estamos interessados em diferenciar letras maiúsculas de minúsculas. Então queremos *mapear* letras maiúsculas na respectiva letra minúscula antes de aplicar o filtro. Se não o fizermos as letras maúsculas serão apagadas.
+Nós também não estamos interessados em diferenciar letras maiúsculas de minúsculas. Então, queremos *mapear* letras maiúsculas na respectiva letra minúscula antes de aplicar o filtro. Se não o fizermos, as letras maiúsculas serão apagadas.
 
-Julia possui uma função `map` que faz exatamente isso. Ela é parecida com `filter` ao receber uma função como primeiro argument e uma coleção como segundo. Mas agora o que ela faz é construir uma nova coleção com os valores da função dada no primeiro argumento aplicada sobre os elementos da coleção passado no segundo argumento.
+Julia possui uma função `map` que faz exatamente isso. Ela é parecida com `filter` ao receber uma função como primeiro argumento e uma coleção como segundo. Mas agora o que ela faz é construir uma nova coleção com os valores da função dada no primeiro argumento aplicada sobre os elementos da coleção.
 
-Julia possui uma função já pronta para isso, chamada `lowercase`. Ela pega um caracter e mapeia esse caracter na respectiva letra só que em minúscula. Mas nossa vida está mais fácil ainda. Ela também pode receber uma `String` de entrada e converter cada caracter, assim como faríamos com `map`. Então, abaixo, você nem precisa usar `map`. Mas não podia deixar de comentar sobre sua existência já nessa primeira oportunidade.  
-
+Já para o caso particular, converter letras para minúsculas, Julia possui uma função pronta chamada `lowercase`. Ela também pode receber uma `String` de entrada e converter cada caracter, assim como faríamos com `map`. Então, abaixo, você nem precisa usar `map`. Mas eu não podia deixar de comentar sobre a existência de `map` já nessa primeira oportunidade.  
 """
 
 # ╔═╡ 98266882-f998-11ea-3270-4339fb502bc7
-md"👉 Use a função `lowercase` para converter `messy_sentence_2` em minúculas e depois use `filter` para extrair apenas os caracteres do nosso alfabeto."
+md"👉 Use a função `lowercase` para converter `messy_sentence_2` em minúsculas e depois use `filter` para extrair apenas os caracteres do nosso alfabeto."
 
 # ╔═╡ d3c98450-f998-11ea-3caf-895183af926b
 messy_sentence_2 = "Awesome! 😍"
 
 # ╔═╡ d3a4820e-f998-11ea-2a5c-1f37e2a6dd0a
-cleaned_sentence_2 = missing
+cleaned_sentence_2 = filter(isinalphabet, lowercase(messy_sentence_2))
 
 # ╔═╡ aad659b8-f998-11ea-153e-3dae9514bfeb
 md"""
-Por fim, preciamos lidar com **acentos**: simplesmente apagar caracteres acentuados dos textos vai acabar alterando as frequências demais, particularmente em português. Uma opção seria adicionar caracteres acentuados a nosso alfabeto, mas vamos fazer algo ainda mais simples: vamos substituir os caracteres acentuados por sua versão sem acentos. Juia já tem uma rotina que bascimante faz isso que usamos com base da função `unaccent` abaixo.
+Por fim, precisamos lidar com **acentos**: simplesmente apagar caracteres acentuados dos textos vai acabar alterando as frequências demais, particularmente em português. Uma opção seria adicionar caracteres acentuados a nosso alfabeto, mas vamos fazer algo ainda mais simples: vamos substituir os caracteres acentuados por sua versão sem acentos. Julia já tem uma rotina que faz quase isso e vamos usá-la para como base da função `unaccent` abaixo.
 """
 
 # ╔═╡ 734851c6-f92d-11ea-130d-bf2a69e89255
@@ -221,16 +218,13 @@ unaccent(french_word)
 # ╔═╡ 8d3bc9ea-f9a1-11ea-1508-8da4b7674629
 md"""
 👉 Agora vamos colocar tudo junto. Escreva uma função chamada `clean` que recebe uma cadeia de caracteres e retorna sua versão "limpa" onde:
-- caracteres acentuados são substituidos por sua versão sem acentos;
-- letras maíusculas são convertidas para minúsculas;
-- elimina (filtra) catacteres que não estão contidos em `alphabet`.
+- caracteres acentuados são substituídos por sua versão sem acentos;
+- letras maiúsculas são convertidas para minúsculas;
+- elimina (filtra) caracteres que não estão contidos em `alphabet`.
 """
 
 # ╔═╡ 4affa858-f92e-11ea-3ece-258897c37e51
-function clean(text)
-
-    return missing
-end
+clean(text) = filter(isinalphabet, unaccent(lowercase(text)))
 
 # ╔═╡ e00d521a-f992-11ea-11e0-e9da8255b23b
 clean("Crème brûlée est mon plat préféré.")
@@ -260,12 +254,12 @@ sample_freqs = letter_frequencies(first_sample)
 
 # ╔═╡ 603741c2-f9a4-11ea-37ce-1b36ecc83f45
 md"""
-O resultado é um vetor de 27 elementos com valores entre 0.1 e 1.0. Esses valores correspondem à frequência de cada letra. 
+O resultado é um vetor de 27 elementos com valores entre 0.0 e 1.0. Esses valores correspondem à frequência de cada letra. 
 
 `sample_freqs[i] == 0.0` indica que a $i$-ésima letra não apareceu na amostra, e
 `sample_freqs[i] == 0.1` indica que 10% das letras na amostra correspondiam a $i$-ésima letra.
 
-Para facilitar a conversão entre um caracter do alfabeto e um índice, nos temos a rotina abaixo:
+Para facilitar a conversão entre um caracter do alfabeto e um índice, nós temos a rotina abaixo:
 """
 
 # ╔═╡ b3de6260-f9a4-11ea-1bae-9153a92c3fe5
@@ -282,23 +276,23 @@ $(html"<br>")
 """
 
 # ╔═╡ 92bf9fd2-f9a5-11ea-25c7-5966e44db6c6
-unused_letters = ['a', 'b', 'c'] # Substitua com sua solução
+unused_letters = [alphabet[i] for i=findall(isequal(0.0), sample_freqs)]
 
 # ╔═╡ dcffd7d2-f9a6-11ea-2230-b1afaecfdd54
 md"""
 Agora que conhecemos as frequências das letras em português, podemos gerar textos aleatórios que se parecem um pouco mais com nossa língua. Compare.
 
-**Letras aleatórios no em `alphabet`:**
+**Letras aleatórios em `alphabet`:**
 """
 
 # ╔═╡ 01215e9a-f9a9-11ea-363b-67392741c8d4
 md"""
-**Letras aleatórias com as frequencias corretas:**
+**Letras aleatórias com as frequências corretas:**
 """
 
 # ╔═╡ 8ae13cf0-f9a8-11ea-3919-a735c4ed9e7f
 md"""
-Simplemente considerando _frequências_ corretas, já conseguimos ver o nosso modelo dando respostas mais razoáveis.
+Simplesmente considerando _frequências_ corretas, já conseguimos ver o nosso modelo dando respostas mais razoáveis.
 
 Nossa próxima observação é que algumas **combinações de letras são mais comuns que outras**. O nosso modelo considera ainda que "sapato" é tão comum quando "aaotps". Na próxima seção vamos considerar também essas _frequências de transição_ e usá-las para melhorar o modelo.
 """
@@ -310,9 +304,9 @@ Nossa próxima observação é que algumas **combinações de letras são mais c
 md"""
 #### Exercício 1.3 - _Frequências de transição_
 
-Nos exercícios anteriores nós calculamos a frequência de cada letra na amostra _contando_ suas ocorrências e depois deividindo pelo o número total de letras.
+Nos exercícios anteriores nós calculamos a frequência de cada letra na amostra _contando_ suas ocorrências e depois dividindo pelo o número total de letras.
 
-Neste exercícios nós vamos contar o _as transições entre letras_, como `aa`, `as`, `rt`, `rr`. Duas letras isoladas podem ser comuns, como `a`  e `e`, mas a sua combinção `ae`  bem mais rara.
+Neste exercícios nós vamos contar o _as transições entre letras_, como `aa`, `as`, `rt`, `rr`. Duas letras isoladas podem ser comuns, como `a`  e `e`, mas a sua combinação `ae`  bem mais rara.
 
 Para quantificar essa observação vamos fazer o mesmo que no último exercício: vamos contar as ocorrências em uma _amostra de texto_ e criar uma **matriz de frequências de transição**.
 """
@@ -336,7 +330,7 @@ md"O que obtemos é uma **matriz 27 × 27**. Cada entrada corresponde a um par d
 
 # ╔═╡ aa2a73f6-0c1d-4be1-a414-05a6f8ce04bd
 md"""
-O brilho no fundo de cada par de letras indica o quão frequente o par é. O espaço é rpresentado por `_`.
+O brilho no fundo de cada par de letras indica o quão frequente o par é. O espaço é representado por `_`. Note que as duas matrizes acima só ficam interessantes quando você implementar a função `clean` do exercício 1.1. Caso contrário o texto processador é simplesmente `missing` que quase não tem informação interessante.
 """
 
 # ╔═╡ 0b67789c-f931-11ea-113c-35e5edafcbbf
@@ -359,21 +353,21 @@ end
 md"""👉 Qual a frequência da combinação `"lh"`?"""
 
 # ╔═╡ 1b4c0c28-f9ab-11ea-03a6-69f69f7f90ed
-lh_frequency = missing
+lh_frequency = sample_freq_matrix[index_of_letter('l'), index_of_letter('h')]
 
 # ╔═╡ 1f94e0a2-f9ab-11ea-1347-7dd906ebb09d
 md"""👉 E de `"hl"`?"""
 
 # ╔═╡ 41b2df7c-f931-11ea-112e-ede3b16f357a
-hl_frequency = missing
+hl_frequency = sample_freq_matrix[index_of_letter('h'), index_of_letter('l')]
 
 # ╔═╡ 1dd1e2f4-f930-11ea-312c-5ff9e109c7f6
 md"""
-👉 Escreva código que letras aparecem repetidas (padrões como `rr`) na amostra.
+👉 Escreva código que devolve um vetor com letras aparecem repetidas (por exemplo o `r` que está associado ao padrão repetido `rr`) na amostra.
 """
 
 # ╔═╡ 65c92cac-f930-11ea-20b1-6b8f45b3f262
-double_letters = ['a', 'b', 'c'] # replace with your answer
+double_letters = [alphabet[i] for i=findall(!isequal(0.0), diag(sample_freq_matrix))] # replace with your answer
 
 # ╔═╡ 4582ebf4-f930-11ea-03b2-bf4da1a8f8df
 md"""
@@ -382,39 +376,47 @@ md"""
 _Faça isso à mão ou com código, o que for mais fácil para você!_
 """
 
+# ╔═╡ b89e59a5-9241-4394-b1c0-63ca89857fd1
+start_with_b=sample_freq_matrix[index_of_letter('b'),:]
+
 # ╔═╡ 7898b76a-f930-11ea-2b7e-8126ec2b8ffd
-most_likely_to_follow_w = 'x' # replace with your answer
+most_likely_to_follow_w = [alphabet[i] for i=findall(isequal(maximum(start_with_b)), start_with_b)]
 
 # ╔═╡ 458cd100-f930-11ea-24b8-41a49f6596a0
 md"""
 👉 Qual letra tem mais chance de preceder um **B**?
 """
 
+# ╔═╡ 880843c5-4fd5-44ec-a797-a085397a4058
+end_with_b=sample_freq_matrix[:,index_of_letter('b')]
+
 # ╔═╡ bc401bee-f931-11ea-09cc-c5efe2f11194
-most_likely_to_precede_w = 'x' # replace with your answer
+most_likely_to_precede_w = [alphabet[i] for i=findall(isequal(maximum(end_with_b)), end_with_b)]
 
 # ╔═╡ 45c20988-f930-11ea-1d12-b782d2c01c11
 md"""
-👉 Qual a soma de cada linha? E qual a soma de cada coluna? Qual a soma de todos os lementos da matrix? Como podemos interpretar esses valores"
+👉 Qual a soma de cada linha? E qual a soma de cada coluna? Qual a soma de todos os elementos da matriz? Como podemos interpretar esses valores"
 """
 
 # ╔═╡ 58428158-84ac-44e4-9b38-b991728cd98a
-row_sums = missing
+row_sums = [sum(sample_freq_matrix[i,:]) for i=1:length(alphabet)]
 
 # ╔═╡ 4a0314a6-7dc0-4ee9-842b-3f9bd4d61fb1
-col_sums = missing
+col_sums = [sum(sample_freq_matrix[:,i]) for i=1:length(alphabet)]
+
+# ╔═╡ 78a715b3-772d-4dc3-a719-ca0d632fa29c
+matrix_sum = sum(sample_freq_matrix)
 
 # ╔═╡ cc62929e-f9af-11ea-06b9-439ac08dcb52
 row_col_answer = md"""
-
-Blablabla
+Como cada caractere (exceto aquelas no começo e no fim do texto) é obrigatoriamente precedido e antecedido por outro caractere, é lógico imaginar que a soma de frequências por linhas e colunas será igual (exceto, novamente, para caracteres extremos), e a soma das somas das i-ésimas linha e coluna dividido pela soma de toda a matriz dá uma boa ideia (mas não perfeita, pois os elementos da diagonal são somados duas vezes, e os caracteres extremos novamente estragam) da frequência do i-ésimo caractere no texto. A soma de toda as frequências da matriz obviamente retorna 1, pela forma como foram definidas suas entradas.
 """
 
 # ╔═╡ 2f8dedfc-fb98-11ea-23d7-2159bdb6a299
 md"""
 Nós podemos então usar as frequências de transição para gerar texto aleatoriamente de forma que obedeça as essas frequências. Note, que o texto fica muito parecido com linguagem natural! Aos poucos vamos melhorando o nosso modelo.
 
-Já deve até dar par usar o nosso modelo para gerar senhas aleatórias prounciáveis!
+Já deve até ser possível usar nosso modelo para gerar senhas aleatórias pronunciáveis!
 """
 
 # ╔═╡ b7446f34-f9b1-11ea-0f39-a3c17ba740e5
@@ -434,7 +436,7 @@ md"""
 
 # ╔═╡ d83f8bbc-f9af-11ea-2392-c90e28e96c65
 md"""
-**Letras aleatórias obedecendo as frequências de transião corretas:**
+**Letras aleatórias obedecendo as frequências de transição corretas:**
 """
 
 # ╔═╡ b5b8dd18-f938-11ea-157b-53b145357fd1
@@ -452,10 +454,16 @@ end
 function sample_text(A, n)
 
     first_index = rand_sample(vec(sum(A, dims = 1)))
-
+	
     indices = reduce(1:n; init = [first_index]) do word, _
         prev = last(word)
-        freq = normalize_array(A[prev, :])
+		col = A[prev, :]
+		if sum(col) > 0.0
+        	freq = normalize_array(col)
+		else
+			col_len = length(col)
+			freq = ones(col_len) / col_len
+		end
         next = rand_sample(freq)
         [word..., next]
     end
@@ -470,11 +478,11 @@ md"""
 
 # ╔═╡ 141af892-f933-11ea-1e5f-154167642809
 md"""
-Parece que temos agora um modelo de lígua descente, no sentido que ele pelo menos entende quais são as _frequências de transição_ presentes. Na demostração acima tente alternar entre  $(join(string.(fieldnames(typeof(samples))), " e ")) -- o texto claramente vai se parecer mais com a lígua escolhida do que com a(s) outra(s), demosntrado que o modelo captura diferenças importantes entre as duas línguas. Isso apesar do nossos "dados de treinamento" terem sido extratos bem pequenos de texto.
+Parece que temos agora um modelo de língua descente, no sentido que ele pelo menos entende quais são as _frequências de transição_ presentes. No exemplo acima tente alternar entre $(join(string.(fieldnames(typeof(samples))), " e ")) -- o texto claramente vai se parecer mais com a língua escolhida do que com a(s) outra(s), demonstrando que o modelo captura diferenças importantes entre as duas línguas. Isso apesar do nossos "dados de treinamento" terem sido extratos bem pequenos de texto.
 
-Nesse exercício, vamos usar o nosso modelo para gerar um **classificador**: programa que decide automatimante se um novo texto está em  $(join(string.(fieldnames(typeof(samples))), " ou ")). 
+Nesse exercício, vamos usar o nosso modelo para gerar um **classificador**: programa que decide automaticamente se um novo texto está em  $(join(string.(fieldnames(typeof(samples))), " ou ")). 
 
-Essa não é uma tarefa difícil -- você sempre pode usar dicionários das duas líguas e verificar onde há mais ocorrências -- mas vamos fazer algo mais interessante e mais próximos de técnicas modernas de IA. Vamos treinar o nosso programa e baseado no _modelo de linguagem_ que desenvolvemos vamos obter o classificador.
+Essa não é uma tarefa difícil -- você sempre pode usar dicionários das duas línguas e verificar onde há mais ocorrências -- mas vamos fazer algo mais interessante e mais próximo de técnicas modernas de IA. Vamos treinar o nosso programa e, baseado no _modelo de linguagem_ que desenvolvemos, obter o classificador.
 """
 
 # ╔═╡ 7eed9dde-f931-11ea-38b0-db6bfcc1b558
@@ -494,7 +502,7 @@ mystery_sample
 
 # ╔═╡ 292e0384-fb57-11ea-0238-0fbe416fc976
 md"""
-Vamos calcular as frequências de transição na amostra mistoriosa! Digite alguma coisa na caixa de texto acima e observer que a matriz de frequência atualiza automaticamente.
+Vamos calcular as frequências de transição na amostra misteriosa! Digite alguma coisa na caixa de texto acima e observe que a matriz de frequência atualiza automaticamente.
 """
 
 # ╔═╡ 7dabee08-f931-11ea-0cb2-c7d5afd21551
@@ -502,22 +510,19 @@ transition_frequencies(mystery_sample)
 
 # ╔═╡ 3736a094-fb57-11ea-1d39-e551aae62b1d
 md"""
-Nosso modelo irá **comparar as frequências de transião da amostra misteriosa** com as frequência que já temos das duas linguagens. Aquele que for a mais próxima será escolhida como provável linguagem do novo texto.
+Nosso modelo irá **comparar as frequências de transição da amostra misteriosa** com as frequência que já temos das duas linguagens. Aquela que for a mais próxima será escolhida como provável linguagem do novo texto.
 
 Mas como comparar duas matrizes? Queremos usar uma _distância_ de matrizes, uma medida de proximidade entre os seus elementos.
 
-👉 Escreva uma função chamada `matrix_distance` que recebe duas matrizes de mesma dimensão e calcula a ditância entre eles através de:
+👉 Escreva uma função chamada `matrix_distance` que recebe duas matrizes de mesma dimensão e calcula a distância entre eles através de:
 
 1. Subtrai elementos correspondentes;
-2. Obtem o módulo de cada diferença;
+2. Obtém o módulo de cada diferença;
 3. Soma esses módulos.
 """
 
 # ╔═╡ 13c89272-f934-11ea-07fe-91b5d56dedf8
-function matrix_distance(A, B)
-
-    return missing # do something with A .- B
-end
+matrix_distance(A, B) = sum(abs.(A.-B))
 
 # ╔═╡ 7d60f056-f931-11ea-39ae-5fa18a955a77
 distances = map(samples) do sample
@@ -533,26 +538,26 @@ end
 
 # ╔═╡ 8c7606f0-fb93-11ea-0c9c-45364892cbb8
 md"""
-Acima escrevemos código que calcula a distância com respeito as amostras originais. Se deu tudo certo o valor menor estará relacionado com a língua correta. Dê uma olhada no código. Se não conhece ainda o comando `do` de Julia, [veja o manual](https://docs.julialang.org/en/v1/base/base/#do).
+Acima escrevemos código que calcula a distância com respeito às amostras originais. Se deu tudo certo o valor menor estará relacionado com a língua correta. Dê uma olhada no código. Se não conhece ainda o comando `do` de Julia, [veja o manual](https://docs.julialang.org/en/v1/base/base/#do).
 
 #### Se quiser ler mais
-Um fenômeno interessante é ver que a decompisição SVD da matriz de transição é capaz de agrupar o alfabeto em consoantes e vogais, sem precisar de mais informação sobre a língua. Veja esse [paper](http://languagelog.ldc.upenn.edu/myl/Moler1983.pdf) se quiser tentar sozinho! Como dica sugerimos tirar o espaço em branco `alphabet` (como é feito no paper) para obter resultados melhores.
+Um fenômeno interessante é ver que a decomposição SVD da matriz de transição é capaz de agrupar o alfabeto em consoantes e vogais, sem precisar de mais informação sobre a língua. Veja esse [paper](http://languagelog.ldc.upenn.edu/myl/Moler1983.pdf) se quiser tentar sozinho! Como dica sugerimos tirar o espaço em branco `alphabet` (como é feito no paper) para obter resultados melhores.
 """
 
 # ╔═╡ 82e0df62-fb54-11ea-3fff-b16c87a7d45b
 md"""
 ## **Exercício 2** - _Geração de Línguas_
 
-O modelo do exercício 1 tem a propriedade que ele pode ser usado para _gerar_ texto. Se por um lado isso é interessante para mostrar que ele captura alguma estrutura da língua original, o texto produzido é totalmente sem sentido: ainda não consiguimos acertar as palavras e muito menos a estrutura de frases.
+O modelo do exercício 1 tem a propriedade que ele pode ser usado para _gerar_ texto. Se por um lado isso é interessante para mostrar que ele captura alguma estrutura da língua original, o texto produzido é totalmente sem sentido: ainda não conseguimos acertar as palavras e muito menos a estrutura de frases.
 
-Para ir um pouco além com nosso modelo, nós vamos _generalizar_ o que já fizemos. Ao invés de trabalhar com _pares de letras_, vamos trabalhar com _combinações de palavras_. E ao invés de analisarmos frequẽncias em bigramas, vamos trabalhar com [_$n$-gramas_ ](https://pt.wikipedia.org/wiki/N-grama).
+Para ir um pouco além com nosso modelo, nós vamos _generalizar_ o que já fizemos. Ao invés de trabalhar com _pares de letras_, vamos trabalhar com _combinações de palavras_. E ao invés de analisarmos frequências em bigramas, vamos trabalhar com [_$n$-gramas_ ](https://pt.wikipedia.org/wiki/N-grama).
 
 
 #### Conjunto de dados
 
 Isso também quer dizer que vamos precisar de um conjunto de dados maior para treinar o modelo: o número de palavras (e suas combinações) é muito maior do que o número de letras. 
 
-Para isso nós vamos treinhar o nosso modelo no livro "Dom Casmurro" de Machado de Assis que será baixado do [Projeto Gutemberg](https://www.gutenberg.org/ebooks/55752). Esse texto clássico está em domínio público então não há problemas de fazer issso. Abaixo nós pegamos o livro diretamente da Internet, limpamos os trechos iniciais e finais e dividimos o texto em palavras e sinais de pontuação.
+Para isso nós vamos treinar o nosso modelo no livro "Dom Casmurro" de Machado de Assis que será baixado do [Projeto Gutemberg](https://www.gutenberg.org/ebooks/55752). Esse texto clássico está em domínio público então não há problemas de fazer isso. Abaixo, nós pegamos o livro diretamente da Internet, limpamos os trechos iniciais e finais e dividimos o texto em palavras e sinais de pontuação.
 """
 
 # ╔═╡ b7601048-fb57-11ea-0754-97dc4e0623a1
@@ -589,7 +594,7 @@ sample_words = splitwords(samples.Portuguese)
 md"""
 #### Exercício 2.1 - _Digramas revisitados_
 
-O objetigo dos próximos exercícios é **generalizar** o que fizemos no exercício 1. Para manter as coisas simples, vamos _dividi o nosso problema_ em problemas menores (como deve ser feito para resolver qualquer problema computacional não trivial). 
+O objetivo dos próximos exercícios é **generalizar** o que fizemos no exercício 1. Para manter as coisas simples, vamos _dividir o nosso problema_ em problemas menores (como deve ser feito para resolver qualquer problema computacional não trivial). 
 
 Inicialmente, aqui está uma função que pega um vetor e devolve um vetor composto de todos os **pares de vizinhos** presentes no array original. Por exemplo
 
@@ -638,8 +643,12 @@ ngrams([1, 2, 3, 42], 2) == bigrams([1, 2, 3, 42])
 
 # ╔═╡ 7be98e04-fb6b-11ea-111d-51c48f39a4e9
 function ngrams(words, n)
+	N=n-1
+	starting_positions = 1:length(words)-N
 
-    return missing
+    map(starting_positions) do i
+        words[i:i+N]
+    end
 end
 
 # ╔═╡ 052f822c-fb7b-11ea-382f-af4d6c2b4fdb
@@ -650,8 +659,6 @@ ngrams(sample_words, 4)
 
 # ╔═╡ 7b10f074-fb7c-11ea-20f0-034ddff41bc3
 md"""
-Se fosse ficou "empacado", apenas escreva `ngrams(words, n) = bigrams(words)` (ignorando o valor real do $n$), e vá para os próximos exercícios.
-
 #### Exercício 2.2 - _Revisitando a matriz de frequências_
 No exercício 1 usamos um array 2D para guardar as frequências dos bigramas, onde cada linha e coluna correspondia a um caracter do alfabeto. para usar trigramas, podemos então usar arrays 3D e assim por diante.
 
@@ -660,7 +667,7 @@ Porém, ao contar palavras no lugar de letras temos um problema: Um array 3D com
 
 # ╔═╡ 24ae5da0-fb7e-11ea-3480-8bb7b649abd5
 md"""
-_Dom Casmurro_ consists of $(
+_Dom Casmurro_ possui $(
 	length(Set(dc_words))
 ) palavras únicas. Isso significa que existem $(
 	Int(floor(length(Set(dc_words))^3 / 10^9))
@@ -671,7 +678,7 @@ _Dom Casmurro_ consists of $(
 md"""
 $(html"<br>")
 
-Mas pensando bem, esse array enorme deria a grande *maioria das entradas iguais a zero*. Por exemplo, _"Capitú"_ é uma palavra comum no livro, mas _"Capitú Capitú Capitú"_ não ocorre no livro. Podemos usar esse fato para armazenar os dados em uma estrutura especial que não guarda os zeros, em um tipo de _matriz esparsa_.
+Mas pensando bem, esse array enorme teria a grande *maioria das entradas iguais a zero*. Por exemplo, _"Capitú"_ é uma palavra comum no livro, mas _"Capitú Capitú Capitú"_ não ocorre no livro. Podemos usar esse fato para armazenar os dados em uma estrutura especial que não guarda os zeros, em um tipo de _matriz esparsa_.
 
 Julia possui o pacote [`SparseArrays.jl`](https://docs.julialang.org/en/v1/stdlib/SparseArrays/index.html) que parece uma boa ideia nesse caso. Mas ele apenas lida com arrays 1D e 2D. Além disse vamos querer indexar os arrays diretamente com strings e não índices inteiros. Para isso vamos usar os **dicionários** da linguagem ou `Dict`.
 
@@ -686,11 +693,11 @@ healthy["fruits"]
 
 # ╔═╡ 52970ac4-fb82-11ea-3040-8bd0590348d2
 md"""
-(Você notou uma coisa: os dicionários não têm ordem garantida, assim ao imprimeir o dicionário os dados usados em sua criação apareceram em ordem trocada.)
+(Você notou uma coisa: os dicionários não têm ordem garantida. Assim ao imprimir o dicionário os dados usados em sua criação apareceram em ordem trocada.)
 
 Você pode adicionar ou modificar os dados de um `Dict` a qualquer momento simplesmente associando um (possivelmente novo) valor a `my_dict[key]`. Você pode verificar se um valor existe usando `haskey(my_dict, key)`.
 
-👉 Use essas duas técnicas para escrever uma rotina chamada `word_counts` que pega um array de palavras e retorna um `Dict` com as eintradas `palavra => número_de_ocorrências`.
+👉 Use essas duas técnicas para escrever uma rotina chamada `word_counts` que pega um array de palavras e retorna um `Dict` com as entradas `palavra => número_de_ocorrências`.
 
 Por exemplo,
 ```julia
@@ -709,10 +716,12 @@ Dict(
 
 # ╔═╡ 8ce3b312-fb82-11ea-200c-8d5b12f03eea
 function word_counts(words::Vector)
-    counts = Dict()
+    counts = Dict{String,Int64}
 
-    # your code here
-
+    for i=unique!(words)
+		counts[i]=count(i, words)
+	end
+	
     return counts
 end
 
@@ -729,7 +738,7 @@ capitu_count = missing
 
 # ╔═╡ 294b6f50-fb84-11ea-1382-03e9ab029a2d
 md"""
-Ótimo! Agora podemos voltar aos n-gramas. Com o objtivo de gerar texto, vamos armazenar uma _memória de completamento_. Este é um discionário onde cada chave é um $(n - 1)$-grama, e o valor corresponde é um vetor com todas as palavras que podem completá-lo a um $n$-grama válido. Vejamos um exemplo:
+Ótimo! Agora podemos voltar aos n-gramas. Com o objetivo de gerar texto, vamos armazenar uma _memória de completamento_. Este é um dicionário onde cada chave é um $(n - 1)$-grama, e o valor corresponde é um vetor com todas as palavras que podem completá-lo a um $n$-grama válido. Vejamos um exemplo:
 
 ```julia
 let
@@ -747,21 +756,17 @@ end
 Assim, para trigramas, as chaves são as primeiras duas palavras de um trigrama, e os 
 valores são vetores contendo as terceiras palavras que aparecem nesses trigramas.
 
-Se um trigrama aparece múltiplas vezes, como por exemplo
+Se um trigrama aparece múltiplas vezes, como por exemplo "Capitu falou sorrindo", então a última palavra ("sorrindo") deve ser armazenada múltiplas vezes. Isso vai nos permitir gerar trigramas com as mesmas frequências que o texto original.
 
-
-If the same n-gram occurs multiple times (e.g. "said Emma laughing"), then the last word ("laughing") should also be stored multiple times. This will allow us to generate trigrams with the same frequencies as the original text.
-
-👉 Write the function `completion_cache`, which takes an array of ngrams (i.e. an array of arrays of words, like the result of your `ngram` function), and returns a dictionary like described above.
+👉 Escreva a função `completion_cache`, que recebe um array de n-gramas (um array de arrays de palavras como o resultado da função `ngram`), e retorna um dicionário de completamento, como descrito acima.
 """
 
 # ╔═╡ b726f824-fb5e-11ea-328e-03a30544037f
 function completion_cache(grams)
     cache = Dict()
 
-    # your code here
-
-    cache
+    # Add correct code below 
+    cache = Dict(g[1:end - 1] => [g[end]] for g in grams)
 end
 
 # ╔═╡ 18355314-fb86-11ea-0738-3544e2e3e816
@@ -779,7 +784,7 @@ Qual informação está nessa cache? No exemplo, as palavras "to be" podem ser s
 md"""
 #### Exercício 2.4 - _Escreva um romance_
 
-Nós temos tudo o que precisamos para gerar nosso próprio romance. O passo final é selecionar n-gramas aleaoriamente de modo que o próximo n-grama tem uma intersecção com o anterior. Nós fizemos isso na função  `generate_from_ngrams` abaixo. Dê uma olhada no código ou escreva a sua própria versão.
+Nós temos tudo o que precisamos para gerar nosso próprio romance. O passo final é selecionar n-gramas aleatoriamente de modo que o próximo n-grama tem uma intersecção com o anterior. Nós fizemos isso na função  `generate_from_ngrams` abaixo. Dê uma olhada no código ou escreva a sua própria versão.
 """
 
 # ╔═╡ a72fcf5a-fb62-11ea-1dcc-11451d23c085
@@ -857,10 +862,13 @@ Entre com o seu próprio texto na caixa abaixo e use-o como dado de treinamento 
 @bind generate_demo_sample TextField((50, 5), default = samples.Portuguese)
 
 # ╔═╡ 70169682-fb8c-11ea-27c0-2dad2ff3080f
-md"""Using $(@bind generate_sample_n_letters NumberField(1:5))grams for characters"""
+md"""Using $(@bind generate_sample_n_letters NumberField(1:5, default = 2))grams for characters"""
+
+# ╔═╡ 6a7c5425-c86c-4f22-982a-345234df15cb
+NumberField
 
 # ╔═╡ 402562b0-fb63-11ea-0769-375572cc47a8
-md"""Using $(@bind generate_sample_n_words NumberField(1:5))grams for words"""
+md"""Using $(@bind generate_sample_n_words NumberField(1:5, default = 2))grams for words"""
 
 # ╔═╡ 2521bac8-fb8f-11ea-04a4-0b077d77529e
 md"""
@@ -966,7 +974,7 @@ hint(md"Dê uma olhada na imagem de frequências de pares")
 
 # ╔═╡ e467c1c6-fbf2-11ea-0d20-f5798237c0a6
 hint(
-    md"Comece com o código de `bigrams` e use a documentação de Julia para entender como ele funcina. Sabendo disso, pense em como generalizar `bigram` para obter a função `ngram`. Pode facilitar começar numa folha de papel primeiro.",
+    md"Comece com o código de `bigrams` e use a documentação de Julia para entender como ele funciona. Sabendo disso, pense em como generalizar `bigram` para obter a função `ngram`. Pode facilitar começar numa folha de papel primeiro.",
 )
 
 # ╔═╡ ffc40ab2-f380-11ea-2136-63542ff0f386
@@ -1114,7 +1122,7 @@ else
         output = clean(input)
 
 
-        if output isa Missing
+        if output isa Missing || startswith(output, "missing")
             still_missing()
         elseif output isa Vector{Char}
             keep_working(
@@ -1302,235 +1310,253 @@ PlutoUI = "~0.7.9"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-[[ArgTools]]
+julia_version = "1.7.3"
+manifest_format = "2.0"
+
+[[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
 
-[[Artifacts]]
+[[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 
-[[Base64]]
+[[deps.Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
-[[ColorTypes]]
+[[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
 git-tree-sha1 = "024fe24d83e4a5bf5fc80501a314ce0d1aa35597"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
 version = "0.11.0"
 
-[[Colors]]
+[[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
 git-tree-sha1 = "417b0ed7b8b838aa6ca0a87aadf1bb9eb111ce40"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
 version = "0.12.8"
 
-[[Compat]]
+[[deps.Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
 git-tree-sha1 = "727e463cfebd0c7b999bbf3e9e7e16f254b94193"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
 version = "3.34.0"
 
-[[Compose]]
+[[deps.CompilerSupportLibraries_jll]]
+deps = ["Artifacts", "Libdl"]
+uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+
+[[deps.Compose]]
 deps = ["Base64", "Colors", "DataStructures", "Dates", "IterTools", "JSON", "LinearAlgebra", "Measures", "Printf", "Random", "Requires", "Statistics", "UUIDs"]
 git-tree-sha1 = "c6461fc7c35a4bb8d00905df7adafcff1fe3a6bc"
 uuid = "a81c6b42-2e10-5240-aca2-a61377ecd94b"
 version = "0.9.2"
 
-[[DataStructures]]
+[[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
 git-tree-sha1 = "7d9d316f04214f7efdbb6398d545446e246eff02"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
 version = "0.18.10"
 
-[[Dates]]
+[[deps.Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
-[[DelimitedFiles]]
+[[deps.DelimitedFiles]]
 deps = ["Mmap"]
 uuid = "8bb1440f-4735-579b-a4ab-409b98df4dab"
 
-[[Distributed]]
+[[deps.Distributed]]
 deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
-[[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+[[deps.Downloads]]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
-[[FixedPointNumbers]]
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
+
+[[deps.FixedPointNumbers]]
 deps = ["Statistics"]
 git-tree-sha1 = "335bfdceacc84c5cdf16aadc768aa5ddfc5383cc"
 uuid = "53c48c17-4a7d-5ca2-90c5-79b7896eea93"
 version = "0.8.4"
 
-[[InteractiveUtils]]
+[[deps.InteractiveUtils]]
 deps = ["Markdown"]
 uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
-[[IterTools]]
+[[deps.IterTools]]
 git-tree-sha1 = "05110a2ab1fc5f932622ffea2a003221f4782c18"
 uuid = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
 version = "1.3.0"
 
-[[JSON]]
+[[deps.JSON]]
 deps = ["Dates", "Mmap", "Parsers", "Unicode"]
 git-tree-sha1 = "8076680b162ada2a031f707ac7b4953e30667a37"
 uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 version = "0.21.2"
 
-[[LibCURL]]
+[[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
 
-[[LibCURL_jll]]
+[[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
 
-[[LibGit2]]
+[[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
 uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 
-[[LibSSH2_jll]]
+[[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
 
-[[Libdl]]
+[[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
 
-[[LinearAlgebra]]
-deps = ["Libdl"]
+[[deps.LinearAlgebra]]
+deps = ["Libdl", "libblastrampoline_jll"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
-[[Logging]]
+[[deps.Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
-[[Markdown]]
+[[deps.Markdown]]
 deps = ["Base64"]
 uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 
-[[MbedTLS_jll]]
+[[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
 
-[[Measures]]
+[[deps.Measures]]
 git-tree-sha1 = "e498ddeee6f9fdb4551ce855a46f54dbd900245f"
 uuid = "442fdcdd-2543-5da2-b0f3-8c86c306513e"
 version = "0.3.1"
 
-[[Mmap]]
+[[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
-[[MozillaCACerts_jll]]
+[[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
 
-[[NetworkOptions]]
+[[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
-[[OrderedCollections]]
+[[deps.OpenBLAS_jll]]
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
+uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+
+[[deps.OrderedCollections]]
 git-tree-sha1 = "85f8e6578bf1f9ee0d11e7bb1b1456435479d47c"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.4.1"
 
-[[Parsers]]
+[[deps.Parsers]]
 deps = ["Dates"]
 git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
 version = "2.0.3"
 
-[[Pkg]]
+[[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
-[[PlutoUI]]
+[[deps.PlutoUI]]
 deps = ["Base64", "Dates", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
 git-tree-sha1 = "44e225d5837e2a2345e69a1d1e01ac2443ff9fcb"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 version = "0.7.9"
 
-[[Printf]]
+[[deps.Printf]]
 deps = ["Unicode"]
 uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
-[[REPL]]
+[[deps.REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
 uuid = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
 
-[[Random]]
-deps = ["Serialization"]
+[[deps.Random]]
+deps = ["SHA", "Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
-[[Reexport]]
+[[deps.Reexport]]
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
 version = "1.2.2"
 
-[[Requires]]
+[[deps.Requires]]
 deps = ["UUIDs"]
 git-tree-sha1 = "4036a3bd08ac7e968e27c203d45f5fff15020621"
 uuid = "ae029012-a4dd-5104-9daa-d747884805df"
 version = "1.1.3"
 
-[[SHA]]
+[[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
 
-[[Serialization]]
+[[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
 
-[[SharedArrays]]
+[[deps.SharedArrays]]
 deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 
-[[Sockets]]
+[[deps.Sockets]]
 uuid = "6462fe0b-24de-5631-8697-dd941f90decc"
 
-[[SparseArrays]]
+[[deps.SparseArrays]]
 deps = ["LinearAlgebra", "Random"]
 uuid = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
 
-[[Statistics]]
+[[deps.Statistics]]
 deps = ["LinearAlgebra", "SparseArrays"]
 uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
-[[Suppressor]]
+[[deps.Suppressor]]
 git-tree-sha1 = "a819d77f31f83e5792a76081eee1ea6342ab8787"
 uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
 version = "0.2.0"
 
-[[TOML]]
+[[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
-[[Tar]]
+[[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
 
-[[Test]]
+[[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-[[UUIDs]]
+[[deps.UUIDs]]
 deps = ["Random", "SHA"]
 uuid = "cf7118a7-6976-5b1a-9a39-7adc72f591a4"
 
-[[Unicode]]
+[[deps.Unicode]]
 uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 
-[[Zlib_jll]]
+[[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
 
-[[nghttp2_jll]]
+[[deps.libblastrampoline_jll]]
+deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
+uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+
+[[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
 
-[[p7zip_jll]]
+[[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╠═ec66314e-f37f-11ea-0af4-31da0584e881
-# ╠═85cfbd10-f384-11ea-31dc-b5693630a4c5
+# ╟─ec66314e-f37f-11ea-0af4-31da0584e881
+# ╟─85cfbd10-f384-11ea-31dc-b5693630a4c5
 # ╠═33e43c7c-f381-11ea-3abc-c942327456b1
 # ╟─938185ec-f384-11ea-21dc-b56b7469f798
 # ╠═a4937996-f314-11ea-2ff9-615c888afaa8
@@ -1550,9 +1576,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─a094e2ac-f92d-11ea-141a-3566552dd839
 # ╠═27c9a7f4-f996-11ea-1e46-19e3fc840ad9
 # ╟─f2a4edfa-f996-11ea-1a24-1ba78fd92233
-# ╟─5c74a052-f92e-11ea-2c5b-0f1a3a14e313
+# ╠═5c74a052-f92e-11ea-2c5b-0f1a3a14e313
 # ╠═dcc4156c-f997-11ea-3e6f-057cd080d9db
-# ╠═129fbcfe-f998-11ea-1c96-0fd3ccd2dcf8
+# ╟─129fbcfe-f998-11ea-1c96-0fd3ccd2dcf8
 # ╠═3a5ee698-f998-11ea-0452-19b70ed11a1d
 # ╠═75694166-f998-11ea-0428-c96e1113e2a0
 # ╟─6fe693c8-f9a1-11ea-1983-f159131880e9
@@ -1575,10 +1601,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─11e9a0e2-bc3d-4130-9a73-7c2003595caa
 # ╠═6a64ab12-f960-11ea-0d92-5b88943cdb1a
 # ╟─603741c2-f9a4-11ea-37ce-1b36ecc83f45
-# ╟─b3de6260-f9a4-11ea-1bae-9153a92c3fe5
+# ╠═b3de6260-f9a4-11ea-1bae-9153a92c3fe5
 # ╠═a6c36bd6-f9a4-11ea-1aba-f75cecc90320
 # ╟─6d3f9dae-f9a5-11ea-3228-d147435e266d
-# ╟─92bf9fd2-f9a5-11ea-25c7-5966e44db6c6
+# ╠═92bf9fd2-f9a5-11ea-25c7-5966e44db6c6
 # ╟─95b81778-f9a5-11ea-3f51-019430bc8fa8
 # ╟─7df7ab82-f9ad-11ea-2243-21685d660d71
 # ╟─dcffd7d2-f9a6-11ea-2230-b1afaecfdd54
@@ -1605,17 +1631,20 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─489fe282-f931-11ea-3dcb-35d4f2ac8b40
 # ╟─1dd1e2f4-f930-11ea-312c-5ff9e109c7f6
 # ╠═65c92cac-f930-11ea-20b1-6b8f45b3f262
-# ╠═671525cc-f930-11ea-0e71-df9d4aae1c05
+# ╟─671525cc-f930-11ea-0e71-df9d4aae1c05
 # ╟─7711ecc5-9132-4223-8ed4-4d0417b5d5c1
 # ╟─4582ebf4-f930-11ea-03b2-bf4da1a8f8df
 # ╠═7898b76a-f930-11ea-2b7e-8126ec2b8ffd
+# ╠═b89e59a5-9241-4394-b1c0-63ca89857fd1
 # ╟─a5fbba46-f931-11ea-33e1-054be53d986c
-# ╠═458cd100-f930-11ea-24b8-41a49f6596a0
+# ╟─458cd100-f930-11ea-24b8-41a49f6596a0
 # ╠═bc401bee-f931-11ea-09cc-c5efe2f11194
-# ╠═ba695f6a-f931-11ea-0fbb-c3ef1374270e
+# ╠═880843c5-4fd5-44ec-a797-a085397a4058
+# ╟─ba695f6a-f931-11ea-0fbb-c3ef1374270e
 # ╟─45c20988-f930-11ea-1d12-b782d2c01c11
 # ╠═58428158-84ac-44e4-9b38-b991728cd98a
 # ╠═4a0314a6-7dc0-4ee9-842b-3f9bd4d61fb1
+# ╠═78a715b3-772d-4dc3-a719-ca0d632fa29c
 # ╠═cc62929e-f9af-11ea-06b9-439ac08dcb52
 # ╟─2f8dedfc-fb98-11ea-23d7-2159bdb6a299
 # ╟─b7446f34-f9b1-11ea-0f39-a3c17ba740e5
@@ -1624,7 +1653,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─4e8d327e-f9b0-11ea-3f16-c178d96d07d9
 # ╟─489b03d4-f9b0-11ea-1de0-11d4fe4e7c69
 # ╟─d83f8bbc-f9af-11ea-2392-c90e28e96c65
-# ╟─0e872a6c-f937-11ea-125e-37958713a495
+# ╠═0e872a6c-f937-11ea-125e-37958713a495
 # ╠═fd202410-f936-11ea-1ad6-b3629556b3e0
 # ╟─b5b8dd18-f938-11ea-157b-53b145357fd1
 # ╟─0e465160-f937-11ea-0ebb-b7e02d71e8a8
@@ -1654,7 +1683,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═052f822c-fb7b-11ea-382f-af4d6c2b4fdb
 # ╠═067f33fc-fb7b-11ea-352e-956c8727c79f
 # ╟─954fc466-fb7b-11ea-2724-1f938c6b93c6
-# ╠═e467c1c6-fbf2-11ea-0d20-f5798237c0a6
+# ╟─e467c1c6-fbf2-11ea-0d20-f5798237c0a6
 # ╟─7b10f074-fb7c-11ea-20f0-034ddff41bc3
 # ╟─24ae5da0-fb7e-11ea-3480-8bb7b649abd5
 # ╟─47836744-fb7e-11ea-2305-3fa5819dc154
@@ -1663,7 +1692,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─52970ac4-fb82-11ea-3040-8bd0590348d2
 # ╠═8ce3b312-fb82-11ea-200c-8d5b12f03eea
 # ╠═a2214e50-fb83-11ea-3580-210f12d44182
-# ╠═a9ffff9a-fb83-11ea-1efd-2fc15538e52f
+# ╟─a9ffff9a-fb83-11ea-1efd-2fc15538e52f
 # ╟─808abf6e-fb84-11ea-0785-2fc3f1c4a09f
 # ╠═953363dc-fb84-11ea-1128-ebdfaf5160ee
 # ╟─b8af4d06-b38a-4675-9399-81fb5977f077
@@ -1680,6 +1709,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─1939dbea-fb63-11ea-0bc2-2d06b2d4b26c
 # ╟─70169682-fb8c-11ea-27c0-2dad2ff3080f
 # ╟─b5dff8b8-fb6c-11ea-10fc-37d2a9adae8c
+# ╠═6a7c5425-c86c-4f22-982a-345234df15cb
 # ╟─402562b0-fb63-11ea-0769-375572cc47a8
 # ╟─ee8c5808-fb5f-11ea-19a1-3d58217f34dc
 # ╟─2521bac8-fb8f-11ea-04a4-0b077d77529e
