@@ -379,7 +379,7 @@ function convolve(v::AbstractVector, k)
 		for j in -l₂:l₂
 			prov+=k[j]*extend(v, i+j)
 		end
-		aux[i] = prov
+		aux[i] = abs(prov)
 	end
 	
     return aux
@@ -456,7 +456,7 @@ function convolve(M::AbstractMatrix, K::AbstractMatrix)
 					prov+=K[k, l]*extend(M, i+k, j+l)
 				end
 			end
-			aux[i, j] = prov
+			aux[i, j] = abs(prov)
 		end
 	end
 	
@@ -629,13 +629,13 @@ Use as funções anteriores na sua implementações e adicione células intermed
 
 # ╔═╡ 9eeb876c-ee15-11ea-1794-d3ea79f47b75
 function with_sobel_edge_detect(image)
+	aux=norm.(image)
 	Gₓ=[(2-j)*(2-(i-2)^2) for i=1:3, j=1:3]
+	#soma=sum(abs(i) for i=Gₓ)
+	#Gₓ=Gₓ./soma
 	G_y=transpose(Gₓ)
-	Gₜ=.√(Gₓ.^2+G_y.^2)
-	soma=sum(i for i=Gₜ)
-	println(Gₜ)
-	
-    return convolve(image, Gₜ./soma)
+
+    return .√(convolve(aux, Gₓ).^2 .+convolve(aux, G_y).^2)
 end
 
 # ╔═╡ 1bf94c00-ee19-11ea-0e3c-e12bc68d8e28
@@ -1821,7 +1821,7 @@ version = "17.4.0+0"
 # ╠═beb62fda-38a6-4528-a176-cfb726f4b5bd
 # ╟─f0d55cec-2e81-4cbb-b166-2cf4f2a0f43f
 # ╠═1c8b4658-ee0c-11ea-2ede-9b9ed7d3125e
-# ╠═f0c3e99d-9eb9-459e-917a-c2338af6683c
+# ╟─f0c3e99d-9eb9-459e-917a-c2338af6683c
 # ╠═a6149507-d5ba-45c1-896a-3487070d36ec
 # ╟─f8bd22b8-ee14-11ea-04aa-ab16fd01826e
 # ╠═2a9dd06a-ee13-11ea-3f84-67bb309c77a8
