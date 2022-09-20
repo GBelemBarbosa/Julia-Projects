@@ -1,0 +1,51 @@
+m=3
+n=3
+L=3 #number of layers (both ends included)
+N=[n-1,2,1] #number of nodes (not including bias node) of each layer (both ends included)
+push!(N, 0)
+Y=[1
+0
+1]
+x₀=[0.1 0.3
+0.6 -0.2
+-1.2 -3.1]
+α=1
+ϵ=0.001
+itₘ=1000
+
+h(x) = 1/(1+exp(-x))
+
+function calc(x₀, Θ, h; L=L, N=N)
+  for l=1:L-1
+    x₀=h.(hcat(ones(N[l]+1, 1), x₀)*Θ[l]')
+  end
+  return x₀
+end  
+
+Θ=[rand(Float64, (N[l], N[l-1]+1)) for l=2:L+1]
+Θ[L]=ones(Float64, (1, N[L-1]+1))
+
+k=0
+A=Vector{Array{Float64}}(undef, L)
+while true 
+  Δ=[zeros(Float64, (N[l], N[l-1]+1)) for l=2:L]
+  A[1]=x₀
+  for l=1:L-1
+    A[l+1]=h.(hcat(ones(N[l]+1, 1), A[l])*Θ[l]')
+  end
+  δ=A[L].-Y
+  Ε=maximum(abs.(δ))
+  Δ[L-1]=δ.*vcat(ones(1, m), A[L-1]')*ones(N[L-1]+1, 1)
+  δ=(δ*Θ[L-1][2:end]').*A[L-1].*(1 .-A[L-1])
+  for l=L-2:-1:1
+    Δ[l]=vcat(ones(1, m), A[l]')*δ
+    δ=(δ*Θ[l][:, 2:end]').*A[l].*(1 .-A[l])
+  end
+  for l=1:L-1
+    Θ[l]-=(α/m).*Δ[l]'
+  end
+  k+=1
+  if abs(Ε)<ϵ || k>itₘ
+    break
+  end
+end

@@ -850,9 +850,6 @@ bigbreak
 # ╔═╡ 27847dc4-ee0a-11ea-0651-ebbbb3cfd58c
 bigbreak
 
-# ╔═╡ 0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
-bigbreak
-
 # ╔═╡ 5842895a-ee10-11ea-119d-81e4c4c8c53b
 bigbreak
 
@@ -1166,9 +1163,9 @@ version = "1.2.1"
 
 [[deps.ImageMagick_jll]]
 deps = ["Artifacts", "Ghostscript_jll", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Libtiff_jll", "Pkg", "Zlib_jll", "libpng_jll"]
-git-tree-sha1 = "f025b79883f361fa1bd80ad132773161d231fd9f"
+git-tree-sha1 = "124626988534986113cfd876e3093e4a03890f58"
 uuid = "c73af94c-d91f-53ed-93a7-00f77d67a9d7"
-version = "6.9.12+2"
+version = "6.9.12+3"
 
 [[deps.ImageMetadata]]
 deps = ["AxisArrays", "ImageAxes", "ImageBase", "ImageCore"]
@@ -1873,7 +1870,6 @@ version = "17.4.0+0"
 # ╟─7c6642a6-ee15-11ea-0526-a1aac4286cdd
 # ╠═9eeb876c-ee15-11ea-1794-d3ea79f47b75
 # ╠═1bf94c00-ee19-11ea-0e3c-e12bc68d8e28
-# ╟─0001f782-ee0e-11ea-1fb4-2b5ef3d241e2
 # ╟─8ffe16ce-ee20-11ea-18bd-15640f94b839
 # ╟─5842895a-ee10-11ea-119d-81e4c4c8c53b
 # ╟─2d9f3ae4-9e4c-49ce-aab0-5f87aba85c3e

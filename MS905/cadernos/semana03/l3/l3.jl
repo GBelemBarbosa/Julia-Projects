@@ -371,7 +371,7 @@ double_letters = [alphabet[i] for i=findall(!isequal(0.0), diag(sample_freq_matr
 
 # ╔═╡ 4582ebf4-f930-11ea-03b2-bf4da1a8f8df
 md"""
-👉 Qual letra tem mais chance de seguir um **B**?
+👉 Qual a primeira letra de alphabet com chance máxima de seguir um **B**?
 
 _Faça isso à mão ou com código, o que for mais fácil para você!_
 """
@@ -380,18 +380,18 @@ _Faça isso à mão ou com código, o que for mais fácil para você!_
 start_with_b=sample_freq_matrix[index_of_letter('b'),:]
 
 # ╔═╡ 7898b76a-f930-11ea-2b7e-8126ec2b8ffd
-most_likely_to_follow_w = [alphabet[i] for i=findall(isequal(maximum(start_with_b)), start_with_b)]
+most_likely_to_follow_w = [alphabet[i] for i=findall(isequal(maximum(start_with_b)), start_with_b)][1]
 
 # ╔═╡ 458cd100-f930-11ea-24b8-41a49f6596a0
 md"""
-👉 Qual letra tem mais chance de preceder um **B**?
+👉 Qual a primeira letra de alphabet com chance máxima de preceder um **B**?
 """
 
 # ╔═╡ 880843c5-4fd5-44ec-a797-a085397a4058
 end_with_b=sample_freq_matrix[:,index_of_letter('b')]
 
 # ╔═╡ bc401bee-f931-11ea-09cc-c5efe2f11194
-most_likely_to_precede_w = [alphabet[i] for i=findall(isequal(maximum(end_with_b)), end_with_b)]
+most_likely_to_precede_w = [alphabet[i] for i=findall(isequal(maximum(end_with_b)), end_with_b)][1]
 
 # ╔═╡ 45c20988-f930-11ea-1d12-b782d2c01c11
 md"""
@@ -735,7 +735,7 @@ md"""
 """
 
 # ╔═╡ 953363dc-fb84-11ea-1128-ebdfaf5160ee
-capitu_count = count("Capitu", dom_casmurro)
+capitu_count = count(r"Capitu\W", dom_casmurro)
 
 # ╔═╡ 294b6f50-fb84-11ea-1382-03e9ab029a2d
 md"""
@@ -1662,11 +1662,11 @@ version = "17.4.0+0"
 # ╠═65c92cac-f930-11ea-20b1-6b8f45b3f262
 # ╟─671525cc-f930-11ea-0e71-df9d4aae1c05
 # ╟─7711ecc5-9132-4223-8ed4-4d0417b5d5c1
-# ╟─4582ebf4-f930-11ea-03b2-bf4da1a8f8df
+# ╠═4582ebf4-f930-11ea-03b2-bf4da1a8f8df
 # ╠═7898b76a-f930-11ea-2b7e-8126ec2b8ffd
 # ╠═b89e59a5-9241-4394-b1c0-63ca89857fd1
 # ╟─a5fbba46-f931-11ea-33e1-054be53d986c
-# ╟─458cd100-f930-11ea-24b8-41a49f6596a0
+# ╠═458cd100-f930-11ea-24b8-41a49f6596a0
 # ╠═bc401bee-f931-11ea-09cc-c5efe2f11194
 # ╠═880843c5-4fd5-44ec-a797-a085397a4058
 # ╟─ba695f6a-f931-11ea-0fbb-c3ef1374270e
