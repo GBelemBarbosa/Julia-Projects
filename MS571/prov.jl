@@ -58,5 +58,4 @@ while Ε>ϵ && k<itₘ
 
   k+=1
 end
-println(Ε)
-println(calc(A, x₀, Θ, h))
+println(A[L], " ", Y, " ", Ε)
