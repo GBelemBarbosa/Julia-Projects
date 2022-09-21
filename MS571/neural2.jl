@@ -28,14 +28,13 @@ end
 k=0
 A=Vector{Array{Float64}}(undef, L)
 while true 
-  Δ=[zeros(Float64, (N[l], N[l-1]+1)) for l=2:L]
   A[1]=x₀
   for l=1:L-1
     A[l+1]=h.(hcat(ones(N[l]+1, 1), A[l])*Θ[l]')
   end
   δ=A[L].-Y
   Ε=maximum(abs.(δ))
-  Δ[L-1]=δ.*vcat(ones(1, m), A[L-1]')*ones(N[L-1]+1, 1)
+  Δ[L-1]=sum(δ.*hcat(ones(m, 1), A[L-1]), dims=1)'
   δ=(δ*Θ[L-1][2:end]').*A[L-1].*(1 .-A[L-1])
   for l=L-2:-1:1
     Δ[l]=vcat(ones(1, m), A[l]')*δ
@@ -48,4 +47,5 @@ while true
   if abs(Ε)<ϵ || k>itₘ
     break
   end
+  println(Ε)
 end
