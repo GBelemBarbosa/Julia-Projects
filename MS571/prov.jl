@@ -1,17 +1,18 @@
 m=3
 n=3
 L=3 #number of layers (both ends included)
-N=[n-1,2,1] #number of nodes (not including bias node) of each layer (both ends included)
+N=[n-1,2,2] #number of nodes (not including bias node) of each layer (both ends included)
 push!(N, 0)
-Y=[1
-0
-1]
+Y=[1 0
+0 1
+1 0]
 x₀=[0.1 0.3
 0.6 -0.2
 -1.2 -3.1]
+λ=0
 α=1
 ϵ=0.001
-itₘ=10000
+itₘ=100000
 
 h(x) = 1/(1+exp(-x))
 gᶿ(x) = x.*(1 .-x)
@@ -19,12 +20,17 @@ gᶿ(x) = x.*(1 .-x)
 function calc(A, x₀, Θ, h; L=L, N=N)
   A[1]=x₀
   for l=1:L-1
-    A[l+1]=h.(hcat(ones(N[l]+1, 1), A[l])*Θ[l])
+    A[l+1]=h.(hcat(ones(m, 1), A[l])*Θ[l])
   end
   return A
 end  
 
-Θ=[rand(Float64, (N[l-1]+1, N[l])) for l=2:L+1]
+function randInitializeWeights(Lᵢ, Lₒ)
+    ϵ = (6/(Lᵢ+Lₒ))^(1/2)
+    return rand(Float64, Lᵢ+1, Lₒ)#= .*(2*ϵ).-ϵ =#
+end
+
+Θ=[randInitializeWeights(N[l-1], N[l]) for l=2:L+1]
 Θ[L]=ones(Float64, (N[L-1]+1, 1))
 Θₗ=copy(Θ)
 
@@ -34,13 +40,10 @@ A=calc(Vector{Array{Float64}}(undef, L), x₀, Θ, h)
 Ε=maximum(abs.(δ))
 Δ=[zeros(Float64, (N[l], N[l-1]+1)) for l=2:L]
 while Ε>ϵ && k<itₘ 
-  Δ[L-1]=sum(δ.*hcat(ones(m, 1), A[L-1]), dims=1)'
-  δ=(δ*Θ[L-1][2:end]').*gᶿ(A[L-1])
-  Θ[L-1]-=(α/m).*Δ[L-1]
-  for l=L-2:-1:1
-    Δ[l]=vcat(ones(1, m), A[l]')*δ
-    δ=(δ*Θ[l][2:end, :]).*gᶿ(A[l])
-    Θ[l]-=(α/m).*Δ[l]
+  for l=L-1:-1:1
+    Δ[l]=α.*vcat(ones(1, m), A[l]')*δ+λ.*vcat(zeros(1, N[l+1]), Θ[l][2:end, :])
+    δ=(δ*Θ[l][2:end, :]').*gᶿ(A[l])
+    Θ[l]-=Δ[l]./m
   end
 
   A=calc(A, x₀, Θ, h)
@@ -56,6 +59,16 @@ while Ε>ϵ && k<itₘ
     Θₗ=copy(Θ)
   end
 
+  #= ϵₜ=0.00000001
+  Θ[2][1,1]+=ϵₜ
+  f=calc(A, x₀, Θ, h)[L]
+  F=sum(Y.*log.(f).+(1 .-Y).*log.(1 .-f), dims=1)
+  Θ[2][1,1]-=2*ϵₜ
+  b=calc(A, x₀, Θ, h)[L]
+  B=sum(Y.*log.(b).+(1 .-Y).*log.(1 .-b), dims=1)
+  println(-(F-B)./(m*2*ϵₜ), " ", Δ[2][1, 1]/m)
+  k=itₘ =#
+  
   k+=1
 end
 println(A[L], " ", Y, " ", Ε)
