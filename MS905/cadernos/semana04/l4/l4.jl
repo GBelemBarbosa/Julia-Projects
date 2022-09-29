@@ -538,7 +538,7 @@ end
 
 # ╔═╡ 3e8b0868-f3bd-11ea-0c15-011bbd6ac051
 function memoized_recursive_seam(energies, starting_pixel)
-    memory = Dict{Tuple{Int,Int},Tuple{Float64,Int}}()
+    memory = Dict{Tuple{Int,Int}, Tuple{Float64,Int}}()
 	m, n = size(energies)
 	
     seam=Vector{Int64}(undef, m)
