@@ -6,7 +6,7 @@ include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
 Θₗ=copy(Θ)
 A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 δ=A[L].-Y
-Ε=maximum(sum(abs.(δ), dims=2))
+Ε=sum(abs.(δ))
 Δ=[zeros(Float64, (N[l-1]+1, N[l])) for l=2:L]
 while Ε>ϵ && k<itₘ 
   for l=L-1:-1:1
@@ -22,9 +22,10 @@ while Ε>ϵ && k<itₘ
 
   δ=A[L].-Y
   Εₗ=Ε
-  Ε=maximum(sum(abs.(δ), dims=2))
+  Ε=sum(abs.(δ))
   if Εₗ<Ε
     α/=10
+    println(α, ' ', k)
     Θ=copy(Θₗ)
     Ε=Εₗ
   else
@@ -36,6 +37,6 @@ while Ε>ϵ && k<itₘ
 end
 println(A[L], " ", Y, " ", Ε)
 
-for i=1:N[2]
+#= for i=1:N[2]
     println(reshape(Θ[2][2:end, i]), (Int(√N[1]), Int(√N[1])))
-end
+end =#

@@ -36,5 +36,5 @@ end
 function randInitializeWeights(Lᵢ, Lₒ)
     ϵ = (6/(Lᵢ+Lₒ))^(1/2)
 
-    return rand(Float64, (Lᵢ, Lₒ+1))#= .*(2*ϵ).-ϵ =#
+    return rand(Float64, (Lᵢ, Lₒ+1)).*(2*ϵ).-ϵ
 end
