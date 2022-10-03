@@ -3,10 +3,11 @@ include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
 include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
 
 Θ=[randInitializeWeights(N[l-1], N[l]) for l=2:L]
+Θ[L-1][1, :].=0.5
 Θₗ=copy(Θ)
 A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 δ=A[L].-Y
-Ε=sum(abs.(δ))
+Ε=sum(round.(abs.(δ)))
 Δ=[zeros(Float64, (N[l-1]+1, N[l])) for l=2:L]
 while Ε>ϵ && k<itₘ 
   for l=L-1:-1:1
@@ -22,10 +23,11 @@ while Ε>ϵ && k<itₘ
 
   δ=A[L].-Y
   Εₗ=Ε
-  Ε=sum(abs.(δ))
+  Ε=sum(round.(abs.(δ)))
   if Εₗ<Ε
-    α/=10
-    println(α, ' ', k)
+    β+=βᵢ
+    α=αᵢ/β
+    println(α, ' ', k, ' ', Εₗ, ' ', Ε)
     Θ=copy(Θₗ)
     Ε=Εₗ
   else
@@ -35,7 +37,7 @@ while Ε>ϵ && k<itₘ
   k+=1
   #k=itₘ
 end
-println(A[L], " ", Y, " ", Ε)
+println(sum(round.(abs.(δ))))
 
 #= for i=1:N[2]
     println(reshape(Θ[2][2:end, i]), (Int(√N[1]), Int(√N[1])))

@@ -33,8 +33,8 @@ function check(l, i, j, I; Θ=Θ, L=L, x₀=x₀, Y=Y, Δ=Δ, m=m, ϵₜ=ϵₜ, 
     return current_check
 end
 
-function randInitializeWeights(Lᵢ, Lₒ)
+function randInitializeWeights(Lₒ, Lᵢ)
     ϵ = (6/(Lᵢ+Lₒ))^(1/2)
 
-    return rand(Float64, (Lᵢ, Lₒ+1)).*(2*ϵ).-ϵ
+    return hcat(zeros(Float64, (Lₒ, 1)), rand(Float64, (Lₒ, Lᵢ)).*(2*ϵ).-ϵ)
 end

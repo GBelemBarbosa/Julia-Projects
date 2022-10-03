@@ -3,6 +3,7 @@ include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
 include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
 
 Θ=[randInitializeWeights(N[l], N[l-1]) for l=2:L]
+Θ[L-1][:, 1].=0.5
 Θₗ=copy(Θ)
 A=Vector{Vector{Float64}}(undef, L)
 Εₗ=sum(sum(abs.(foward(A, x₀[i, :], Θ)[L].-Y[i, :])) for i=1:m) 
@@ -23,7 +24,8 @@ while true
   end
 
   if Εₗ<Ε
-    α/=10
+    β+=βᵢ
+    α=αᵢ/β
     Θ=copy(Θₗ)
   else
     Θₗ=copy(Θ)
