@@ -3,7 +3,6 @@ include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
 include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
 
 Θ=[randInitializeWeights(N[l-1], N[l]) for l=2:L]
-Θₗ=copy(Θ)
 A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 δ=A[L].-Y
 Ε=sum(round.(abs.(δ)))
@@ -27,10 +26,6 @@ while Ε>ϵ && k<itₘ
     β+=βᵢ
     α=αᵢ/β
     println(α, ' ', k, ' ', Εₗ, ' ', Ε)
-    Θ=copy(Θₗ)
-    Ε=Εₗ
-  else
-    Θₗ=copy(Θ)
   end
   
   k+=1
