@@ -3,7 +3,6 @@ include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
 include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
 
 Θ=[randInitializeWeights(N[l-1], N[l]) for l=2:L]
-Θ[L-1][1, :].=0.5
 Θₗ=copy(Θ)
 A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 δ=A[L].-Y
@@ -11,12 +10,12 @@ A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 Δ=[zeros(Float64, (N[l-1]+1, N[l])) for l=2:L]
 while Ε>ϵ && k<itₘ 
   for l=L-1:-1:1
-    Δ[l]=α.*vcat(ones(1, m), A[l]')*δ+λ.*vcat(zeros(1, N[l+1]), Θ[l][2:end, :])
+    Δ[l]=α.*vcat(ones(1, m), A[l]')*δ./m+λ.*vcat(zeros(1, N[l+1]), Θ[l][2:end, :])
     δ=(δ*Θ[l][2:end, :]').*gᶿ(A[l])
 
     #check(l, 1, 1, l)
 
-    Θ[l]-=Δ[l]./m
+    Θ[l]-=Δ[l]
   end
 
   A=foward(A, x₀, Θ)
