@@ -34,5 +34,5 @@ end
 println(sum(round.(abs.(δ))))
 
 #= for i=1:N[2]
-    println(reshape(Θ[2][2:end, i]), (Int(√N[1]), Int(√N[1])))
+    println(reshape(Θ[1][2:end, i]), (Int(√N[1]), Int(√N[1])))
 end =#
