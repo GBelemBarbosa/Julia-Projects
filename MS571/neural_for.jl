@@ -1,6 +1,6 @@
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/functions_for.jl")
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
+include("functions_for.jl")
+include("activation_function.jl")
+include("variables.jl")
 
 Θ=[randInitializeWeights(N[l], N[l-1]) for l=2:L]
 Θ[L-1][:, 1].=0.5

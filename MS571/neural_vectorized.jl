@@ -1,27 +1,31 @@
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/functions_vectorized.jl")
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/activation_function.jl")
-include("C:/Users/Usuário/Desktop/Julia-Projects/MS571/variables.jl")
+include("functions_vectorized.jl")
+include("activation_function.jl")
+include("variables.jl")
 
 Θ=[randInitializeWeights(N[l-1], N[l]) for l=2:L]
+Θₗ=copy(Θ) #copy of the initial Θ that will be  used in the gradient check
 A=foward(Vector{Array{Float64}}(undef, L), x₀, Θ)
 δ=A[L].-Y
-Ε=sum(round.(abs.(δ)))
+Ε=sum(Int(argmax(A[L][i, :])!=labels[i]) for i=1:m)
 Δ=[zeros(Float64, (N[l-1]+1, N[l])) for l=2:L]
+k=0 #number of iterations
 while Ε>ϵ && k<itₘ 
   for l=L-1:-1:1
-    Δ[l]=α.*vcat(ones(1, m), A[l]')*δ./m+λ.*vcat(zeros(1, N[l+1]), Θ[l][2:end, :])
+    Δ[l]=vcat(ones(1, m), A[l]')*δ./m+λ.*vcat(zeros(1, N[l+1]), Θ[l][2:end, :])
     δ=(δ*Θ[l][2:end, :]').*gᶿ(A[l])
 
-    #check(l, 1, 1, l)
+    if k==0
+      check(l, 1, 1)
+    end
 
-    Θ[l]-=Δ[l]
+    Θ[l]-=α.*Δ[l]
   end
 
   A=foward(A, x₀, Θ)
 
   δ=A[L].-Y
   Εₗ=Ε
-  Ε=sum(round.(abs.(δ)))
+  Ε=sum(Int(argmax(A[L][i, :])!=labels[i]) for i=1:m)
   if Εₗ<Ε
     β+=βᵢ
     α=αᵢ/β
@@ -29,10 +33,5 @@ while Ε>ϵ && k<itₘ
   end
   
   k+=1
-  #k=itₘ
 end
-println(sum(round.(abs.(δ))))
-
-#= for i=1:N[2]
-    println(reshape(Θ[1][2:end, i]), (Int(√N[1]), Int(√N[1])))
-end =#
+println(Ε)
