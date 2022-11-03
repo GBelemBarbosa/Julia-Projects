@@ -394,6 +394,11 @@ md"""
 
 """
 
+# ╔═╡ 3f17d1b4-3b61-4fdf-9e24-49b0ebda7391
+md"
+Sim, o formato lembra uma distribuição geométrica.
+"
+
 # ╔═╡ 61c00724-0403-11eb-228d-17c11670e5d1
 md"""
 ## **Exercício 3:** _Reinfecção_
@@ -607,6 +612,11 @@ let
 	
 	p
 end
+
+# ╔═╡ b3bb35d5-fe78-4ba2-bce2-35cd4662f06a
+md"
+O comportamento não é o mesmo que antes, uma vez que previamente a curva de infectados começava a diminuir após um tempo, enquanto, nesse caso, como recuperados podem se reinfectar, a curva estabiliza em um valor de infectados (próximo de 80) e não decai, atingindo certo equilíbrio.
+"
 
 # ╔═╡ cdd25106-e4b3-44d8-a4a0-d1e7dd1f6db9
 if student.name == "João Ninguém"
@@ -1804,6 +1814,7 @@ version = "0.9.1+5"
 # ╠═ed8d89e7-307f-43ad-b732-0804df96fa99
 # ╟─9611ca24-0403-11eb-3582-b7e3bb243e62
 # ╠═26e2978e-0435-11eb-0d61-25f552d2771e
+# ╠═3f17d1b4-3b61-4fdf-9e24-49b0ebda7391
 # ╟─61c00724-0403-11eb-228d-17c11670e5d1
 # ╠═8dd97820-04a5-11eb-36c0-8f92d4b859a8
 # ╟─99ef7b2a-0403-11eb-08ef-e1023cd151ae
@@ -1812,6 +1823,7 @@ version = "0.9.1+5"
 # ╠═1ac4b33a-0435-11eb-36f8-8f3f81ae7844
 # ╟─9a377b32-0403-11eb-2799-e7e59caa6a45
 # ╠═21c50840-0435-11eb-1307-7138ecde0691
+# ╠═b3bb35d5-fe78-4ba2-bce2-35cd4662f06a
 # ╟─cdd25106-e4b3-44d8-a4a0-d1e7dd1f6db9
 # ╟─5689841e-0414-11eb-0492-63c77ddbd136
 # ╟─531d13c2-0414-11eb-0acd-4905a684869d
