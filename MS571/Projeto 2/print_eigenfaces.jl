@@ -1,3 +1,5 @@
+import Plots
+
 include("PCA.jl")
 
 for i=1:36
