@@ -667,6 +667,9 @@ CO2=10^log_CO2
 # ╔═╡ de95efae-2675-11eb-0909-73afcd68fd42
 Tneo = -48
 
+# ╔═╡ aae3eab2-e703-4942-8439-fc84d4e1a77b
+ebm=Model.EBM(Tneo, 0.0, 1, t->Model.CO2_const)
+
 # ╔═╡ 378aed18-252b-11eb-0b37-a3b511af2cb5
 let
     p = plot(
@@ -681,7 +684,6 @@ let
     add_cold_hot_areas!(p)
     add_reference_points!(p)
 	
-	ebm=Model.EBM(Tneo, 0.0, 1, t->CO2)
     step_model!(ebm, CO2)
 
     plot!(p,
@@ -692,9 +694,6 @@ let
     )
 
 end |> as_svg
-
-# ╔═╡ 06d28052-2531-11eb-39e2-e9613ab0401c
-ebm = Model.EBM(Tneo, 0.0, 5.0, Model.CO2_const)
 
 # ╔═╡ c78e02b4-268a-11eb-0af7-f7c7620fcc34
 md"""
@@ -1934,9 +1933,9 @@ version = "1.4.1+0"
 # ╟─1eabe908-268b-11eb-329b-b35160ec951e
 # ╠═272f8910-a7b1-4633-b6c4-eedd1b8ea82f
 # ╟─53c2eaf6-268b-11eb-0899-b91c03713da4
-# ╟─06d28052-2531-11eb-39e2-e9613ab0401c
 # ╟─4c9173ac-2685-11eb-2129-99071821ebeb
 # ╠═736515ba-2685-11eb-38cb-65bfcf8d1b8d
+# ╠═aae3eab2-e703-4942-8439-fc84d4e1a77b
 # ╟─8b06b944-268c-11eb-0bfc-8d4dd21e1f02
 # ╟─09ce27ca-268c-11eb-0cdd-c9801db876f8
 # ╟─298deff4-2676-11eb-2595-e7e22f613ea1
