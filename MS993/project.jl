@@ -4,12 +4,12 @@ println(latexify(X; fmt="%.4e"))
 
 U, Σ, V=svd(X)
 println(latexify(U; fmt="%.4e"))
-println(latexify(Σ; fmt="%.4e"))
+println(latexify(Diagonal(Σ); fmt="%.4e"))
 Vt=V'
 println(latexify(Vt; fmt="%.4e"))
 
 u=vcat([1], xₚ)'*V *Diagonal(Σ)^-1
-println(latexify(u; fmt="%.4e"))
+println("u = ", latexify(u; fmt="%.4e"))
 println(sum(u.^2))
 
 println(latexify(V[:, 3]; fmt="%.4e"))
@@ -23,7 +23,6 @@ plt=plot3d(xlim, ylim, vec(zeros(2, 1)),
     ylabel=L"x_2",
     zlabel=L"y",
     zlims=(0, 4.5),
-    title="Dados colineares",
     labels="")
 plot3d!(xlim, ylim, hcat(ones(2, 1), xlim, ylim)*β, labels="Previsão")
 scatter!(x₁, x₂, vec(zeros(m, 1)), labels="", color="green")
@@ -45,9 +44,12 @@ scatter!(plt2, [xₚ[1]], [xₚ[2]], [plane(xₚ[1], xₚ[2])], labels="Previsã
 plot3d!(plt2, [xₚ[1], xₚ[1]], [xₚ[2], xₚ[2]], [0, plane(xₚ[1], xₚ[2])], line=(:dash), color="orange", labels="")
 savefig(plt2, string(xₚ[2])*string(round(V[3, 3], digits=3))*"plane12.png")
 
+println("alpha = ", latexify(U'*y; fmt="%.4e"))
+println("varb = ", latexify([sum(V[j, :].^2 ./Σ.^2) for j=1:n]; fmt="%.4e"))
 U, Σ, Vt=U[:, 1:2], Σ[1:2], Vt[1:2, :]
 α=U'*y
 Z=Diagonal(Σ)*Vt
+println("reta = ", latexify(Z[:, 1:2]\Z[:, 3]; fmt="%.4e"))
 if flag
     plt3=deepcopy(plt1)
     β[3]=-0.3

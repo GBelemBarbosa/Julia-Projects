@@ -202,7 +202,7 @@ md"""
 # Solução ex. 1.1.a (não apague esse comentário)
 
 observations_from_changing_B = md"""
-Quanto menor o $B$, menor o ECS (variação de temperatura causada pela duplicação de concentração de CO$_2$). O $B$ é um coeficiente que dita os \emph{feedbacks} (retornos) ao fenômeno de mudança de temperatura; se negativo, isso indica que os fenômenos contrários ao aquecimento (como radiação de corpos negros) se sobrepôe aos a favor (como o retorno de vapor d'água). Quanto mais negativo, com menor variação a temperatura se estabiliza, isto é, o aquecimento é combatido mais rapidamente.
+Quanto menor o $B$, menor o ECS (variação de temperatura causada pela duplicação de concentração de CO$_2$). O $B$ é um coeficiente que dita os feedbacks (retornos) ao fenômeno de mudança de temperatura; se negativo, isso indica que os fenômenos contrários ao aquecimento (como radiação de corpos negros) se sobrepôe aos a favor (como o retorno de vapor d'água). Quanto mais negativo, com menor variação a temperatura se estabiliza, isto é, o aquecimento é combatido mais rapidamente.
 """
 
 # ╔═╡ 3d66bd30-259d-11eb-2694-471fb3a4a7be
@@ -334,23 +334,7 @@ md"👉 Qual o maior valor observado para as amostras de ECS?"
 # ╔═╡ e5673105-7f78-447c-87be-c8d858b9e836
 # Solução ex. 1.3.c (não apague esse comentário)
 
-begin
-	mean=sum(ECS_samples)./length(ECS_samples)
-	
-	rounded=round.(ECS_samples)
-	counts=Dict()
-	for i in rounded
-		if i in keys(counts)
-			counts[i]+=1
-		else
-			counts[i]=1
-		end
-	end
-	median=findfirst(x->counts[x]==maximum(values(counts)), collect(keys(counts)))
-	
-	println("Média: ", mean)
-	println("Moda dos valores arredondandos: ", counts[median])
-end
+maximum(ECS_samples)
 
 # ╔═╡ cf8dca6c-1fc8-11eb-1f89-099e6ba53c22
 md"Como podemos ver, a distribuição da ECS não é **normalmente distribuída**, apesar de $B$ o ser.

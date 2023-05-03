@@ -13,7 +13,7 @@ y=g.(x₁)
 xlim=[-2; 2]
 ylim=f.(xlim)
 println("********************************************************")
-println(latexify(x₁; fmt="%.4e"))
+println("y = ", latexify(y; fmt="%.4e"))
 
 xₚ=[-1, 10]
 flag=true
